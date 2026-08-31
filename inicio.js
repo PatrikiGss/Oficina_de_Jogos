@@ -1,1 +1,1 @@
-console.log("inicinado repo")
+console.log("inicinado repositorio")
