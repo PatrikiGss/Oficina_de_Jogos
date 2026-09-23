@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ping-Pong Multiplayer — Oficina de Jogos</title>
+    <link rel="stylesheet" href="css/estilo.css" />
+  </head>
+  <body>
+    <main class="mesa">
+      <header class="cabecalho">
+        <h1>Ping-Pong Multiplayer</h1>
+        <p id="status" class="status">Conectando...</p>
+      </header>
+
+      <!-- O canvas tem tamanho fixo (CAMPO.LARGURA x CAMPO.ALTURA em
+           shared/constantes.js). O main.js ajusta estes atributos ao carregar. -->
+      <canvas id="campo" width="800" height="480"></canvas>
+
+      <footer class="ajuda">
+        <p><kbd>W</kbd> / <kbd>S</kbd> ou <kbd>&uarr;</kbd> / <kbd>&darr;</kbd> movem a sua raquete</p>
+        <p id="papel" class="papel"></p>
+      </footer>
+    </main>
+
+    <!-- type="module" permite usar import/export no navegador, igual ao servidor. -->
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
