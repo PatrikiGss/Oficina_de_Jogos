@@ -3,7 +3,7 @@
 //
 // Setup:        entrega os arquivos do jogo para o navegador
 // Construção 3: WebSocket — recebe os comandos, roda a física e
-//               manda o estado do jogo para todo mundo, 60 vezes por segundo
+//               manda o estado do jogo para todo mundo, ~60 vezes por segundo
 //
 // Rodar: npm start
 // =============================================================================
