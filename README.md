@@ -156,20 +156,4 @@ git push -u origin feat/nome-da-feature
 # abre o Pull Request e chama a revisão
 ```
 
-Mudou algo no jogo? Confira se `etapas/` continua batendo com a raiz — o
-roteiro da aula depende disso.
-
-## Ideias para depois da oficina
-
-Nada disto é necessário para a aula. Fica para quem quiser continuar:
-
-- Modo contra o computador (a raquete segue a bola com atraso)
-- Som na rebatida e no ponto
-- Controle por toque, para jogar pelo celular na mesma rede
-- Várias salas no mesmo servidor, com código de 4 letras
-- Testes automáticos da física com `node --test` — o `jogo.js` já é feito de
-  funções que só mexem no estado, o que facilita
-
----
-
 Licença: [MIT](LICENSE.md).
