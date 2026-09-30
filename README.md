@@ -1,126 +1,120 @@
-# Ping-Pong Multiplayer — Oficina de Jogos
+# Oficina de Jogos: Ping-Pong multiplayer
 
-Jogo de Ping-Pong **1×1 em rede local**, feito em JavaScript, para a oficina da
-disciplina de **Atividade de Extensão III**. Duas máquinas na mesma rede, um
-servidor Node.js no meio e o jogo rodando direto no navegador.
+Jogo de ping-pong para dois jogadores em computadores diferentes, ligados pela
+rede local. Foi feito para a oficina de jogos da disciplina de Atividade de
+Extensão III, em que alunos da 2ª fase de Ciência da Computação constroem o
+jogo em duplas, com pair programming, durante uma aula de 3 horas.
 
-O repositório é o jogo **e** o material da aula de 3 horas: são **4 arquivos**,
-cerca de **260 linhas** de código comentado, pensados para serem explicados
-linha a linha para quem acabou de sair do Java.
-
----
-
-## O jogo
-
-Duas raquetes, uma bola, primeiro a fazer **5 pontos** vence. Cada jogador
-está em um computador diferente.
-
-- Uma dupla roda o servidor (`npm start`) e vira a "casa".
-- A outra dupla abre `http://<ip-da-casa>:3000` no navegador.
-- Os dois primeiros a conectar jogam (esquerda e direita). Quem chegar depois
-  assiste.
-- Acabou a partida, **Espaço** começa outra — dá para revezar os jogadores sem
-  reiniciar nada.
-
-Controles: <kbd>W</kbd>/<kbd>S</kbd> ou <kbd>↑</kbd>/<kbd>↓</kbd>. A sua raquete
-aparece em verde.
+O servidor roda em Node.js e o jogo roda no navegador, usando Canvas para o
+desenho e WebSocket para a comunicação. Só a máquina que hospeda a partida
+precisa ter o Node instalado.
 
 ## Como rodar
 
-Precisa de **Node.js 18 ou mais novo** (`node --version`) só na máquina que
-hospeda.
+Com o Node.js 18 ou mais recente instalado, dentro da pasta do projeto:
 
 ```bash
 npm install
 npm start
 ```
 
-```
-Jogo no ar! Nesta máquina: http://localhost:3000
-Para a outra dupla:  http://192.168.0.3:3000
-```
+O terminal mostra dois endereços: um para abrir na própria máquina
+(`http://localhost:3000`) e outro com o IP da rede, que é o que a outra dupla
+deve abrir no navegador. Para testar sozinho, basta abrir o endereço local em
+duas abas.
 
-Para testar sozinho, abra `http://localhost:3000` em **duas abas**.
+O primeiro navegador que conecta fica com a raquete da esquerda, o segundo com
+a da direita, e quem entrar depois só assiste. Cada jogador vê a própria
+raquete em verde. Os controles são W e S ou as setas para cima e para baixo, e
+vence quem fizer 5 pontos primeiro. Depois disso, a barra de espaço começa uma
+nova partida, então dá para revezar os jogadores sem reiniciar o servidor.
 
-> Abre em `localhost` mas não na outra máquina? Quase sempre é o firewall do
-> Windows (permita o Node em redes privadas) ou um Wi-Fi que isola os
-> aparelhos. Soluções no [Plano B](docs/roteiro-aula.md#plano-b).
+Se a página abre em `localhost` mas não na outra máquina, o problema costuma
+ser o firewall do Windows ou uma rede Wi-Fi que não deixa os aparelhos se
+comunicarem. O [roteiro da aula](docs/roteiro-aula.md#plano-b) explica o que
+fazer nesses casos.
 
-## Estrutura
+## Como o código está organizado
 
-```
-Oficina_de_Jogos/
-├── server.js              # servidor: entrega os arquivos + WebSocket + física
-├── package.json           # uma dependência só: ws
-├── public/                # o que vai para o navegador
-│   ├── index.html         # a página com o <canvas>
-│   ├── jogo.js            # AS REGRAS: medidas, estado, física, placar
-│   └── cliente.js         # desenho, teclado e conexão com o servidor
-├── etapas/                # pontos de partida e de resgate da aula
-│   ├── 0-setup/           #   projeto inicial entregue às duplas
-│   └── 2-jogo-local/      #   jogo sem rede (fim da Construção 2 / Plano B)
-└── docs/
-    ├── escopo-oficina.md  # escopo original: objetivo, público, cronograma
-    └── roteiro-aula.md    # guia do instrutor, bloco a bloco
-```
+O jogo tem três arquivos de JavaScript e uma página HTML.
 
-| Arquivo | Linhas de código | Responsabilidade |
-| --- | --- | --- |
-| `public/jogo.js` | 74 | Só regra. Não desenha, não sabe o que é rede — por isso roda **no navegador e no servidor** |
-| `public/cliente.js` | 81 | Desenha o que o servidor manda e avisa o que o jogador apertou. Não calcula nada |
-| `server.js` | 74 | Entrega os arquivos, decide quem joga em cada lado, roda a física e transmite o estado |
-| `public/index.html` | 30 | O canvas e o texto de ajuda |
+`public/jogo.js` guarda as regras: tamanho do campo, estado da partida,
+movimento da bola, colisões e placar. Ele não desenha nada e não sabe nada de
+rede, e é por isso que o mesmo arquivo pode rodar tanto no navegador quanto no
+servidor.
 
-Cada arquivo é dividido em seções marcadas com o bloco da aula em que é
-escrito (`// ----- Construção 2: física -----`).
+`public/cliente.js` roda no navegador. Desenha no canvas o estado que recebe do
+servidor e avisa o servidor quando o jogador aperta ou solta uma tecla. Ele não
+calcula a posição da bola nem das raquetes.
 
-## Como funciona
+`server.js` entrega os arquivos da pasta `public` para o navegador, decide qual
+conexão controla cada lado e roda a física cerca de 60 vezes por segundo,
+enviando o resultado para todos os navegadores conectados.
 
-**O servidor manda; o navegador obedece.** O cliente nunca move a bola nem a
-raquete: ele só diz "estou subindo" e desenha a foto do jogo que chega do
-servidor. É isso que mantém as duas telas iguais — e impede alguém de trapacear
-editando o próprio JavaScript.
+`public/index.html` tem só o canvas, o texto de ajuda e o carregamento do
+`cliente.js`.
 
-```
-  Navegador A                      Servidor (Node.js)                 Navegador B
-  cliente.js                       server.js + jogo.js                cliente.js
-      │                                    │                               │
-      │── {"tipo":"mover","direcao":-1} ──►│◄── {"tipo":"mover",...} ──────│
-      │                                    │                               │
-      │                          atualizar(estado, dt)                     │
-      │                            ~60x por segundo                        │
-      │                                    │                               │
-      │◄──────── {"tipo":"estado", ...} ───┴─── {"tipo":"estado", ...} ───►│
-```
+A pasta `etapas` guarda versões intermediárias usadas na aula: o projeto
+inicial que as duplas recebem e uma versão do cliente sem rede, com os dois
+jogadores no mesmo teclado. A pasta `docs` tem o escopo da oficina e o roteiro
+para quem vai conduzir a aula.
 
-O `jogo.js` é o mesmo arquivo nos dois momentos da aula: na Construção 2 ele
-roda no navegador (jogo local); na Construção 3 o servidor passa a importá-lo e
-o navegador para de calcular. **A física muda de casa sem mudar uma linha.**
+## Como funciona a comunicação
 
-### Mensagens
+Quem decide o que acontece no jogo é o servidor. O navegador manda só a direção
+em que o jogador quer mover a raquete, e o servidor responde com o estado
+completo da partida. Assim as duas telas mostram sempre a mesma coisa, e
+ninguém consegue trapacear alterando o código no próprio navegador.
 
-Todas são JSON com um campo `tipo`.
+As mensagens são objetos JSON com um campo `tipo`:
 
-| De → para | `tipo` | Conteúdo |
-| --- | --- | --- |
-| cliente → servidor | `mover` | `direcao`: `-1` sobe, `0` para, `1` desce |
-| cliente → servidor | `reiniciar` | — (só vale depois que alguém venceu) |
-| servidor → cliente | `lado` | `lado`: `"esquerda"`, `"direita"` ou `null` (espectador) |
-| servidor → cliente | `estado` | `estado` (bola, raquetes, pontos, vencedor) e `aguardando` |
+- `mover`, do navegador para o servidor, com o campo `direcao`: -1 para subir,
+  1 para descer e 0 para parar.
+- `reiniciar`, do navegador para o servidor, pede uma nova partida. Só tem
+  efeito depois que alguém venceu.
+- `lado`, do servidor para o navegador, diz qual raquete aquele navegador
+  controla, ou `null` para quem só assiste.
+- `estado`, do servidor para o navegador, traz a posição da bola e das
+  raquetes, o placar, o vencedor e se ainda falta jogador.
 
-Para ver as mensagens ao vivo: **F12 → Network → WS → Messages**.
+Dá para acompanhar essas mensagens no próprio navegador, abrindo as
+ferramentas de desenvolvedor (F12) na aba Network e filtrando por WS.
 
-## A oficina em 3 blocos de construção
+## A aula
 
-| Bloco | Arquivos | O que se escreve | Resultado na tela |
-| --- | --- | --- | --- |
-| Setup (0:25) | — | nada: `etapas/0-setup` é entregue pronto | página abre na máquina da outra dupla |
-| Construção 1 (0:45) | `jogo.js`, `cliente.js` | medidas, estado inicial, desenho (~60 linhas) | campo, raquetes, bola e placar parados |
-| Construção 2 (1:15) | `jogo.js`, `cliente.js` | física, colisão, placar, teclado (~75 linhas) | jogo completo, dois jogadores no mesmo teclado |
-| Construção 3 (1:45) | `server.js`, `cliente.js` | WebSocket, e a física vai para o servidor (~90 linhas) | duas máquinas jogando uma contra a outra |
+A oficina segue o cronograma de [docs/escopo-oficina.md](docs/escopo-oficina.md),
+e o código é escrito em três blocos.
 
-O passo a passo, com o que explicar em cada bloco, pontos de controle,
-problemas comuns e o que fazer se a rede da sala não colaborar, está em
-**[`docs/roteiro-aula.md`](docs/roteiro-aula.md)**.
+Na Construção 1, o campo é desenhado no canvas, ainda parado. Na Construção 2,
+entram a física, o placar e o teclado, e no fim desse bloco o jogo já funciona
+em um único computador, com um jogador de cada lado do teclado. Na Construção
+3, o servidor passa a usar o mesmo `jogo.js` e o navegador deixa de calcular a
+física, o que permite que duas máquinas joguem uma contra a outra.
 
-Licença: [MIT](LICENSE.md).
+Os arquivos têm comentários marcando em qual bloco cada parte é escrita. O
+passo a passo, os pontos de controle e o que fazer quando uma dupla se perde
+ou a rede da sala não funciona estão em [docs/roteiro-aula.md](docs/roteiro-aula.md).
+
+O projeto foi mantido pequeno de propósito, porque precisa ser explicado linha
+a linha em pouco tempo. Por isso não usa framework, classes nem reconexão
+automática, e cada servidor atende uma partida por vez.
+
+## Desenvolvimento
+
+Todo o desenvolvimento deve ser feito em branches separadas, criadas de acordo
+com a feature que será trabalhada. Ao terminar a feature, abra um Pull Request
+para análise e revisão dos demais membros da equipe.
+
+Nunca desenvolva uma feature diretamente na `main`. Alterações diretas na
+`main` devem se restringir a ajustes pontuais.
+
+Se mudar alguma coisa no jogo, confira se as versões em `etapas/` continuam de
+acordo com a da raiz, porque o roteiro da aula depende delas.
+
+Algumas ideias para depois da oficina: modo contra o computador, som na
+rebatida e no ponto, controle por toque para jogar pelo celular e testes
+automáticos para a física.
+
+## Licença
+
+MIT. Veja [LICENSE.md](LICENSE.md).

@@ -38,12 +38,9 @@ Legenda:
 ## 0:10–0:25 · Contexto técnico
 
 **Cliente × servidor, em uma frase:** o navegador só desenha e avisa o que o
-jogador apertou; quem calcula a bola é o servidor. Desenhe no quadro:
-
-```
-Navegador A  ──"estou subindo"──►  Servidor  ◄──"parei"──  Navegador B
-Navegador A  ◄──── foto do jogo, 60x por segundo ────►  Navegador B
-```
+jogador apertou; quem calcula a bola é o servidor. Vale desenhar no quadro os
+dois navegadores ligados ao servidor: dos navegadores sai só "estou subindo" ou
+"parei", e do servidor volta a foto do jogo, umas 60 vezes por segundo.
 
 **JavaScript para quem vem do Java** — só o que aparece no código da oficina:
 
@@ -75,7 +72,7 @@ Navegador A  ◄──── foto do jogo, 60x por segundo ────►  Nave
 4. **Teste de rede:** a dupla vizinha abre o endereço "Para a outra dupla" que
    apareceu no terminal.
 
-📋 Explique o `server.js` já pronto (24 linhas): a lista `ARQUIVOS` é tudo o
+📋 Explique o `server.js` já pronto (umas 30 linhas): a lista `ARQUIVOS` é tudo o
 que o servidor aceita entregar; o `Content-Type` diz ao navegador o que é cada
 arquivo (sem ele o `.js` é recusado).
 
@@ -88,7 +85,7 @@ Problemas comuns:
 | `npm` não é reconhecido | Node não instalado, ou VSCode aberto antes da instalação — feche e abra |
 | `EADDRINUSE` | já tem um servidor rodando nessa porta — Ctrl+C no outro terminal |
 | Abre em `localhost` mas não na outra máquina | firewall ou Wi-Fi isolado — [Plano B](#plano-b) |
-| Página em branco com duplo clique no `index.html` | tem que abrir **pelo servidor** (`http://...`), nunca por `file://` |
+| Abriu o `index.html` com duplo clique e o jogo não aparece | tem que abrir **pelo servidor** (`http://...`), nunca por `file://` |
 
 ## 0:45–1:15 · Construção 1 — o campo (~60 linhas)
 
@@ -145,7 +142,10 @@ Vá em passos pequenos, rodando (F5) depois de cada um:
 6. ⌨️ Espaço reinicia.
 
 Explique o `dt`: velocidade em **pixels por segundo** × tempo que passou. Sem
-isso, o jogo roda mais rápido em computador mais rápido.
+isso, o jogo roda mais rápido em computador mais rápido. A linha
+`dt = Math.min(dt, 1 / 30)` no começo de `atualizar()` é a trava para quando o
+computador engasga ou a aba fica escondida: sem ela, um `dt` grande faz a bola
+pular por cima da raquete.
 
 ✔️ A dupla joga uma partida inteira até 5 pontos, um de cada lado do teclado.
 
@@ -177,6 +177,7 @@ F5 basta.)
 | linha que troca o texto de ajuda | — |
 | teclado com dois lados + laço com `atualizar()` | laço que só desenha + seção "Construção 3" inteira |
 | raquetes da mesma cor | a sua em verde (`lado === meuLado`) |
+| bola usando a cor que sobrou das raquetes | `ctx.fillStyle` próprio antes do `arc` (senão ela fica verde para quem joga na direita) |
 | — | em `desenhar()`: `if (!estado)` e o aviso de "Aguardando" |
 
 Explique:
@@ -216,7 +217,7 @@ Desafios para quem terminar antes:
 
 ## 2:50–3:00 · Encerramento
 
-- Recapitule com o diagrama do início: 3 arquivos, quem faz o quê.
+- Recapitule com o desenho do início: 3 arquivos, quem faz o quê.
 - Passe o link do repositório (o código completo e comentado está na raiz).
 - Ideias para continuar em casa estão no fim do README.
 
