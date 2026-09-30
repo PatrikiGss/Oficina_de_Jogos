@@ -123,37 +123,4 @@ O passo a passo, com o que explicar em cada bloco, pontos de controle,
 problemas comuns e o que fazer se a rede da sala não colaborar, está em
 **[`docs/roteiro-aula.md`](docs/roteiro-aula.md)**.
 
-## Decisões de simplicidade
-
-O projeto é pequeno de propósito. Algumas coisas que **não** estão aqui, e por
-quê:
-
-| Ficou de fora | Motivo |
-| --- | --- |
-| Express ou outro framework | O servidor de arquivos tem 10 linhas e mostra o que um framework esconderia |
-| Classes | Funções que recebem o estado são mais fáceis de ler de cima a baixo |
-| Reconexão automática | Caiu, aperta F5. Menos código para explicar |
-| Várias salas no mesmo servidor | Cada dupla roda o seu. Uma partida por servidor |
-| Predição/interpolação no cliente | Em rede local o atraso é imperceptível |
-| CSS em arquivo separado | São 15 linhas, ficam no próprio `index.html` |
-
-## Fluxo de trabalho com Git
-
-> Regras do projeto, mantidas desde a criação do repositório.
-
-- Todo desenvolvimento acontece em **branches separadas**, criadas de acordo
-  com a feature que será trabalhada.
-- Concluída a feature, abra um **Pull Request** para análise e revisão dos
-  demais membros da equipe.
-- **Nunca desenvolva uma feature diretamente na `main`.** Alterações diretas na
-  `main` devem ser restritas a ajustes pontuais.
-
-```bash
-git checkout -b feat/nome-da-feature
-# ... desenvolve e testa com duas abas ...
-git commit -m "feat: descrição curta"
-git push -u origin feat/nome-da-feature
-# abre o Pull Request e chama a revisão
-```
-
 Licença: [MIT](LICENSE.md).
