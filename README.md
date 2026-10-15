@@ -20,19 +20,25 @@ npm start
 
 O terminal mostra dois endereços: um para abrir na própria máquina
 (`http://localhost:3000`) e outro com o IP da rede, que é o que a outra dupla
-deve abrir no navegador. Para testar sozinho, basta abrir o endereço local em
-duas abas.
+deve abrir no navegador.
 
 O primeiro navegador que conecta fica com a raquete da esquerda, o segundo com
-a da direita, e quem entrar depois só assiste. Cada jogador vê a própria
-raquete em verde. Os controles são W e S ou as setas para cima e para baixo, e
-vence quem fizer 5 pontos primeiro. Depois disso, a barra de espaço começa uma
-nova partida, então dá para revezar os jogadores sem reiniciar o servidor.
+a da direita, e quem entrar depois só assiste. Cada navegador controla apenas
+a própria raquete, que aparece em verde, usando W e S ou as setas para cima e
+para baixo (tanto faz). Vence quem fizer 5 pontos primeiro. Depois disso, a
+barra de espaço começa uma nova partida, então dá para revezar os jogadores
+sem reiniciar o servidor.
+
+Para testar sozinho, abra o endereço local em duas janelas. O teclado só chega
+à janela que está em foco, então você controla um lado de cada vez: clique em
+uma janela e mova a raquete verde dela, depois clique na outra. Solte a tecla
+antes de trocar de janela, senão a raquete continua andando. Para duas pessoas
+jogarem de verdade, são necessários dois computadores.
 
 Se a página abre em `localhost` mas não na outra máquina, o problema costuma
-ser o firewall do Windows ou uma rede Wi-Fi que não deixa os aparelhos se
-comunicarem. O [roteiro da aula](docs/roteiro-aula.md#plano-b) explica o que
-fazer nesses casos.
+ser o firewall do Windows (permita o Node em redes privadas na primeira vez
+que o servidor rodar) ou uma rede Wi-Fi que não deixa os aparelhos se
+comunicarem.
 
 ## Como o código está organizado
 
@@ -53,11 +59,6 @@ enviando o resultado para todos os navegadores conectados.
 
 `public/index.html` tem só o canvas, o texto de ajuda e o carregamento do
 `cliente.js`.
-
-A pasta `etapas` guarda versões intermediárias usadas na aula: o projeto
-inicial que as duplas recebem e uma versão do cliente sem rede, com os dois
-jogadores no mesmo teclado. A pasta `docs` tem o escopo da oficina e o roteiro
-para quem vai conduzir a aula.
 
 ## Como funciona a comunicação
 
@@ -80,41 +81,4 @@ As mensagens são objetos JSON com um campo `tipo`:
 Dá para acompanhar essas mensagens no próprio navegador, abrindo as
 ferramentas de desenvolvedor (F12) na aba Network e filtrando por WS.
 
-## A aula
-
-A oficina segue o cronograma de [docs/escopo-oficina.md](docs/escopo-oficina.md),
-e o código é escrito em três blocos.
-
-Na Construção 1, o campo é desenhado no canvas, ainda parado. Na Construção 2,
-entram a física, o placar e o teclado, e no fim desse bloco o jogo já funciona
-em um único computador, com um jogador de cada lado do teclado. Na Construção
-3, o servidor passa a usar o mesmo `jogo.js` e o navegador deixa de calcular a
-física, o que permite que duas máquinas joguem uma contra a outra.
-
-Os arquivos têm comentários marcando em qual bloco cada parte é escrita. O
-passo a passo, os pontos de controle e o que fazer quando uma dupla se perde
-ou a rede da sala não funciona estão em [docs/roteiro-aula.md](docs/roteiro-aula.md).
-
-O projeto foi mantido pequeno de propósito, porque precisa ser explicado linha
-a linha em pouco tempo. Por isso não usa framework, classes nem reconexão
-automática, e cada servidor atende uma partida por vez.
-
-## Desenvolvimento
-
-Todo o desenvolvimento deve ser feito em branches separadas, criadas de acordo
-com a feature que será trabalhada. Ao terminar a feature, abra um Pull Request
-para análise e revisão dos demais membros da equipe.
-
-Nunca desenvolva uma feature diretamente na `main`. Alterações diretas na
-`main` devem se restringir a ajustes pontuais.
-
-Se mudar alguma coisa no jogo, confira se as versões em `etapas/` continuam de
-acordo com a da raiz, porque o roteiro da aula depende delas.
-
-Algumas ideias para depois da oficina: modo contra o computador, som na
-rebatida e no ponto, controle por toque para jogar pelo celular e testes
-automáticos para a física.
-
-## Licença
-
-MIT. Veja [LICENSE.md](LICENSE.md).
+Licença: [MIT](LICENSE.md).

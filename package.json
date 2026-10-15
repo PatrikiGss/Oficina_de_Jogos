@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Ping-Pong multiplayer 1x1 em rede local (Node.js + WebSocket + Canvas) para a Oficina de Jogos de Atividade de Extensao III",
   "type": "module",
-  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
