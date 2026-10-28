@@ -29,8 +29,13 @@ para baixo (tanto faz). Vence quem fizer 5 pontos primeiro. Depois disso, a
 barra de espaço começa uma nova partida, então dá para revezar os jogadores
 sem reiniciar o servidor.
 
-Para testar sozinho, abra o endereço local em duas janelas. O teclado só chega
-à janela que está em foco, então você controla um lado de cada vez: clique em
+Para jogar sozinho contra o computador, inicie com `npm run bot` em vez de
+`npm start`. O bot entra no jogo assim que o servidor sobe e fica com a
+raquete da esquerda; abra `http://localhost:3000` e jogue com a da direita.
+
+Para testar a conexão entre dois navegadores no mesmo computador, use
+`npm start` e abra o endereço local em duas janelas. O teclado só chega à
+janela que está em foco, então você controla um lado de cada vez: clique em
 uma janela e mova a raquete verde dela, depois clique na outra. Solte a tecla
 antes de trocar de janela, senão a raquete continua andando. Para duas pessoas
 jogarem de verdade, são necessários dois computadores.
@@ -42,7 +47,8 @@ comunicarem.
 
 ## Como o código está organizado
 
-O jogo tem três arquivos de JavaScript e uma página HTML.
+O jogo tem três arquivos de JavaScript e uma página HTML, mais o bot, que é
+opcional.
 
 `public/jogo.js` guarda as regras: tamanho do campo, estado da partida,
 movimento da bola, colisões e placar. Ele não desenha nada e não sabe nada de
@@ -59,6 +65,14 @@ enviando o resultado para todos os navegadores conectados.
 
 `public/index.html` tem só o canvas, o texto de ajuda e o carregamento do
 `cliente.js`.
+
+`bot.js` não faz parte do jogo construído na aula. Ele sobe o mesmo servidor e
+conecta nele um jogador automático, pela mesma conexão WebSocket que um
+navegador usaria, então o servidor nem sabe que está jogando contra um bot. A
+cada estado recebido, o bot decide se sobe, desce ou para. Para poder ser
+vencido, ele demora um pouco para reagir e erra a mira de propósito, por um
+valor sorteado a cada jogada. As três constantes no topo da classe `Bot`
+controlam a dificuldade.
 
 ## Como funciona a comunicação
 
